@@ -1,7 +1,7 @@
 {
-  "name": "resume-a-resume",
+  "name": "summary",
   "version": "1.0.0",
-  "description": "This is my resume",
+  "description": "This is my summary",
   "author": " <>",
   "private": true,
   "scripts": {
