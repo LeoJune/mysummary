@@ -6,25 +6,25 @@
 </template>
 
 <script>
-  import StyleEditor from './components/StyleEditor'
-  import ResumeEditor from './components/ResumeEditor'
-  import './assets/reset.css'
+import StyleEditor from "./components/StyleEditor";
+import ResumeEditor from "./components/ResumeEditor";
+import "./assets/reset.css";
 
-  export default {
-    name: 'app',
-    components: {
-      StyleEditor,
-      ResumeEditor
-    },
-    data() {
-      return {
-        interval: 40,
-        currentStyle: '',
-        enableHtml: false,
-        fullStyle: [
-          `/*
+export default {
+  name: "app",
+  components: {
+    StyleEditor,
+    ResumeEditor
+  },
+  data() {
+    return {
+      interval: 40,
+      currentStyle: "",
+      enableHtml: false,
+      fullStyle: [
+        `/*
 * 
-* 大家好，我是技术部 前端 程卓
+* 大家好，我是技术部dev 前端 程卓
 * 今天是报告年终总结的日子
 * 设计不会设计，视频也不会视频
 * 只能靠写写代码来完成这次总结了
@@ -86,7 +86,7 @@ html{
           transform: rotateY(-10deg) translateZ(-100px) ;
 }
 `,
-          `
+        `
 /* 让我们来开始今天的主题吧，写总结
  * 等等~ 
  * 在写样式之前，我们还是先把总结的样式写好
@@ -94,9 +94,8 @@ html{
  * ~~~~~~~~~~~~
  * 虽然真实的场景就是来两个区域来回切换，囧 o(╯□╰)o
  */
-`
-          ,
-          `
+`,
+        `
 /* 来给总结部分加样式 */
 .summaryEditor{
   padding: 2em;
@@ -138,9 +137,10 @@ html{
  * ヾ(◍°∇°◍)ﾉﾞ
  * 不骗你
  */
-`],
-        currentMarkdown: '',
-        fullMarkdown: `# 1.2018年工作回顾
+`
+      ],
+      currentMarkdown: "",
+      fullMarkdown: `# 1.2018年工作回顾
 ## 1. 2018年重点完成工作
 
  * 累计完成60+个h5的制作，其中展示类30个左右，游戏类15个左右，视频类15个左右（视频类最让我头疼）(粗略统计,大概比例是这样的把~~)
@@ -171,88 +171,99 @@ by the way,大家有没有对我们前端的工作有增加那么一点点的了
 感谢大家观看！
 
 `
-      }
-    },
-    created() {
-      this.makeResume()
-    },
+    };
+  },
+  created() {
+    this.makeResume();
+  },
 
-    methods: {
-      makeResume: async function () {
-        await this.progressivelyShowStyle(0)
-        await this.progressivelyShowStyle(1)
-        await this.showHtml()
-        await this.progressivelyShowStyle(2)
-        await this.progressivelyShowResume()
-      },
-      showHtml: function () {
-        return new Promise((resolve, reject) => {
-          this.enableHtml = true
-          resolve()
-        })
-      },
-      progressivelyShowStyle(n) {
-        return new Promise((resolve, reject) => {
-          let interval = this.interval
-          let showStyle = (async function () {
-            let style = this.fullStyle[n]
-            if (!style) { return }
-            // 计算前 n 个 style 的字符总数
-            let length = this.fullStyle.filter((_, index) => index <= n).map((item) => item.length).reduce((p, c) => p + c, 0)
-            let prefixLength = length - style.length
-            if (this.currentStyle.length < length) {
-              let l = this.currentStyle.length - prefixLength
-              let char = style.substring(l, l + 1) || ' '
-              this.currentStyle += char
-              if (style.substring(l - 1, l) === '\n' && this.$refs.styleEditor) {
-                this.$nextTick(() => {
-                  this.$refs.styleEditor.goBottom()
-                })
-              }
-              setTimeout(showStyle, interval)
-            } else {
-              resolve()
-            }
-          }).bind(this)
-          showStyle()
-        })
-      },
-      progressivelyShowResume() {
-        return new Promise((resolve, reject) => {
-          let length = this.fullMarkdown.length
-          let interval = this.interval
-          let showResume = () => {
-            if (this.currentMarkdown.length < length) {
-              this.currentMarkdown = this.fullMarkdown.substring(0, this.currentMarkdown.length + 1)
-              let lastChar = this.currentMarkdown[this.currentMarkdown.length - 1]
-              let prevChar = this.currentMarkdown[this.currentMarkdown.length - 2]
-              if (prevChar === '\n' && this.$refs.resumeEditor) {
-                this.$nextTick(() => this.$refs.resumeEditor.goBottom())
-              }
-              setTimeout(showResume, interval)
-            } else {
-              resolve()
-            }
+  methods: {
+    makeResume: async function() {
+      await this.progressivelyShowStyle(0);
+      await this.progressivelyShowStyle(1);
+      await this.showHtml();
+      await this.progressivelyShowStyle(2);
+      await this.progressivelyShowResume();
+    },
+    showHtml: function() {
+      return new Promise((resolve, reject) => {
+        this.enableHtml = true;
+        resolve();
+      });
+    },
+    progressivelyShowStyle(n) {
+      return new Promise((resolve, reject) => {
+        let interval = this.interval;
+        let showStyle = async function() {
+          let style = this.fullStyle[n];
+          if (!style) {
+            return;
           }
-          showResume()
-        })
-      }
+          // 计算前 n 个 style 的字符总数
+          let length = this.fullStyle
+            .filter((_, index) => index <= n)
+            .map(item => item.length)
+            .reduce((p, c) => p + c, 0);
+          let prefixLength = length - style.length;
+          if (this.currentStyle.length < length) {
+            let l = this.currentStyle.length - prefixLength;
+            let char = style.substring(l, l + 1) || " ";
+            this.currentStyle += char;
+            if (style.substring(l - 1, l) === "\n" && this.$refs.styleEditor) {
+              this.$nextTick(() => {
+                this.$refs.styleEditor.goBottom();
+              });
+            }
+            setTimeout(showStyle, interval);
+          } else {
+            resolve();
+          }
+        }.bind(this);
+        showStyle();
+      });
+    },
+    progressivelyShowResume() {
+      return new Promise((resolve, reject) => {
+        let length = this.fullMarkdown.length;
+        let interval = this.interval;
+        let showResume = () => {
+          if (this.currentMarkdown.length < length) {
+            this.currentMarkdown = this.fullMarkdown.substring(
+              0,
+              this.currentMarkdown.length + 1
+            );
+            let lastChar = this.currentMarkdown[
+              this.currentMarkdown.length - 1
+            ];
+            let prevChar = this.currentMarkdown[
+              this.currentMarkdown.length - 2
+            ];
+            if (prevChar === "\n" && this.$refs.resumeEditor) {
+              this.$nextTick(() => this.$refs.resumeEditor.goBottom());
+            }
+            setTimeout(showResume, interval);
+          } else {
+            resolve();
+          }
+        };
+        showResume();
+      });
     }
   }
-
+};
 </script>
 
 <style scoped>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  html {
-    min-height: 100vh;
-  }
-  *{
-    box-sizing: border-box;
-  }
+html {
+  min-height: 100vh;
+}
+* {
+  box-sizing: border-box;
+}
 </style>
